@@ -23,14 +23,14 @@ import { RouterLink } from 'vue-router';
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>1</th>
-              <th>02/04/2024</th>
-              <th>Father</th>
-              <th>Transfer to family bank account</th>
-              <th>25000</th>
+            <tr v-if="income.length">
+              <th v-for="(item, index) in income" :key="index">{{ item.id }}</th>
+              <th v-for="(item, index) in income" :key="index">{{ item.date }}</th>
+              <th v-for="(item, index) in income" :key="index">{{ item.manager }}</th>
+              <th v-for="(item, index) in income" :key="index">{{ item.txn }}</th>
+              <th v-for="(item, index) in income" :key="index">{{ item.amt }}</th>            
             </tr>
-
+            <p v-else>No income data available</p>
           </tbody>
         </table>
       </div>
@@ -42,3 +42,27 @@ import { RouterLink } from 'vue-router';
     </div>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'Income',
+  data() {
+    return {
+      income: [],
+    };
+  },
+  async mounted() {
+    try {
+      const response = await axios.get('https://ocholi.com/api.txt');
+      this.income = response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  methods: {
+    // No methods needed in this example
+  },
+};
+</script>
