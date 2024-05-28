@@ -1,5 +1,18 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+
+const income = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('https://ocholi.com/api.json');
+    income.value = response.data;
+  } catch (error) {
+    console.error(error);
+  }
+});
 </script>
 
 <template>
@@ -23,46 +36,24 @@ import { RouterLink } from 'vue-router';
             </tr>
           </thead>
           <tbody>
-            <tr v-if="income.length">
-              <th v-for="(item, index) in income" :key="index">{{ item.id }}</th>
-              <th v-for="(item, index) in income" :key="index">{{ item.date }}</th>
-              <th v-for="(item, index) in income" :key="index">{{ item.manager }}</th>
-              <th v-for="(item, index) in income" :key="index">{{ item.txn }}</th>
-              <th v-for="(item, index) in income" :key="index">{{ item.amt }}</th>            
+            <template v-if="income.length">
+              <tr v-for="(item, index) in income" :key="index">
+                <td>{{ item.id }}</td>
+                <td>{{ item.date }}</td>
+                <td>{{ item.manager }}</td>
+                <td>{{ item.txn }}</td>
+                <td>{{ item.amt }}</td>
+              </tr>
+            </template>
+            <tr v-else>
+              <td colspan="5">No income data available</td>
             </tr>
-            <p v-else>No income data available</p>
           </tbody>
         </table>
       </div>
       <div class="card-footer">
-        <h4>
-          Footer
-        </h4>
+        <h4>Footer</h4>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import axios from 'axios';
-
-export default {
-  name: 'Income',
-  data() {
-    return {
-      income: [],
-    };
-  },
-  async mounted() {
-    try {
-      const response = await axios.get('https://ocholi.com/api.txt');
-      this.income = response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  },
-  methods: {
-    // No methods needed in this example
-  },
-};
-</script>
